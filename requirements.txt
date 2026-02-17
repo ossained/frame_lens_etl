@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+pandas 
+sqlalchemy
+psycopg2_binary
+selenium
+webdriver-manager
+python-dotenv
