@@ -2,10 +2,6 @@
 # ## Frame & Lens ETL pipeline
 
 # %%
-#pip install requests beautifulsoup4 pandas sqlalchemy psycopg2-binary selenium webdriver-manager python-dotenv
-
-
-# %%
 # import required libraries
 # web scarping librabris
 import requests
@@ -54,7 +50,6 @@ time.sleep(20)
 # %% [markdown]
 # ## Handling infinite scroll
 
-
 # %%
 
 
@@ -94,11 +89,11 @@ for page_num in range(1, 10):   # scrape pages 1–20
 # %%
 page_source = driver.page_source
 soup = BeautifulSoup(page_source, "html.parser")
-soup
+print(soup)
 
 # %%
 glasses = soup.find_all("a", {'class':"product-tile"})
-glasses
+print(glasses)
 
 
 # %%
@@ -130,20 +125,20 @@ for glass in glasses:
     
 
 # %%
-glasses_data
+print(glasses_data)
 
 # %%
 glasses_df = pd.DataFrame(glasses_data)
-glasses_df
+print(glasses_df)
 
 # %%
-glasses_df
+
 
 # %%
 glasses_df.to_csv("glasses_data.csv", index=False)
 
 # %%
-glasses_df.shape
+print(glasses_df.shape)
 
 # %%
 
