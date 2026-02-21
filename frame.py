@@ -53,16 +53,17 @@ time.sleep(20)
 # %%
 
 
-total_pages = 0
+glasses_data = []
 
-for page_num in range(1, 10):   # scrape pages 1–20
+for page_num in range(1, 30):
+
     full_url = f"{url}?page={page_num}"
     print(f"Loading: {full_url}")
 
     driver.get(full_url)
     time.sleep(3)
 
-    # --- SCROLL DOWN BEFORE SCRAPING ---
+    # Scroll
     last_height = driver.execute_script("return document.body.scrollHeight")
 
     while True:
@@ -76,51 +77,31 @@ for page_num in range(1, 10):   # scrape pages 1–20
 
     print(f"Finished scrolling page {page_num}")
 
-    # --- SCRAPE YOUR DATA HERE ---
-    # e.g. extract product cards, links, prices, etc.
+    # ✅ SCRAPE INSIDE LOOP
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    glasses = soup.find_all("a", class_="product-tile")
 
-    print(f"Scraped page {page_num}")
-    
-    total_pages += 1
-    
-    print(f"{total_pages} pages scrapped")
+    print(f"Found {len(glasses)} products on page {page_num}")
 
+    for glass in glasses:
 
-# %%
-page_source = driver.page_source
-soup = BeautifulSoup(page_source, "html.parser")
-print(soup)
+        code_element = glass.find('div', class_='product-code')
+        product_code = code_element.text.strip() if code_element else 'N/A'
 
-# %%
-glasses = soup.find_all("a", {'class':"product-tile"})
-print(glasses)
+        brand_element = glass.find('div', class_='product-brand')
+        product_brand = brand_element.text.strip() if brand_element else 'N/A'
 
+        price_element = glass.find(class_='product-price')
+        price = price_element.get_text(strip=True) if price_element else 'N/A'
 
-# %%
-glasses_data = []
+        glasses_data.append({
+            'page': page_num,   # helpful for debugging
+            'product_code': product_code,
+            'product_brand': product_brand,
+            'price': price
+        })
 
-# %%
-# extract data for each data
-for glass in glasses:
-    
-    
-    code_element = glass.find('div',{'class':'product-code'})
-    product_code = code_element.text.strip() if code_element else 'N/A'
-    
-    
-    brand_element = glass.find('div',{'class':'product-brand'})
-    product_brand = brand_element.text.strip() if brand_element else 'N/A'
-    
-    price_element = glass.find(class_='product-price')
-    price = price_element.get_text(strip=True) if price_element else 'N/A'
-
-    
-    
-    glasses_data.append({
-        'product_code':product_code,
-        'product_brand':product_brand,
-        'price':price
-    })
+print(f"Total products scraped: {len(glasses_data)}")
     
     
 
